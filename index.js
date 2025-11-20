@@ -2,6 +2,7 @@ let savedInput = [];
 const inputEl = document.getElementById("input-el");
 const buttonEl = document.getElementById("button-el");
 const ulEl = document.getElementById("ul-el");
+const downloadBtn = document.getElementById("download-btn");
 
 function render() {
     ulEl.innerHTML = "";
@@ -23,8 +24,11 @@ function render() {
         });
         li.appendChild(checkmark);
 
-        const textNode = document.createTextNode(item.text);
-        li.appendChild(textNode);
+        const link = document.createElement("a");
+        link.href = item.text;
+        link.textContent = item.text;
+        link.target = "_blank";
+        li.appendChild(link);
 
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
@@ -44,5 +48,19 @@ buttonEl.addEventListener("click", function () {
         inputEl.value = "";
         render();
     }
+});
+
+downloadBtn.addEventListener("click", function () {
+    let csvContent = "data:text/csv;charset=utf-8,Job Link\n";
+    savedInput.forEach(function (item) {
+        csvContent += item.text + "\n";
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "job_links.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 });
 
