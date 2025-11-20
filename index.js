@@ -20,6 +20,7 @@ function render() {
         checkmark.textContent = "✔";
         checkmark.addEventListener("click", function () {
             item.isChecked = !item.isChecked;
+            saveToLocalStorage();
             render();
         });
         li.appendChild(checkmark);
@@ -34,6 +35,7 @@ function render() {
         deleteBtn.textContent = "Delete";
         deleteBtn.addEventListener("click", function () {
             savedInput.splice(i, 1);
+            saveToLocalStorage();
             render();
         });
         li.appendChild(deleteBtn);
@@ -42,10 +44,22 @@ function render() {
     }
 }
 
+const savedInputFromLocalStorage = JSON.parse(localStorage.getItem("savedInput"));
+
+if (savedInputFromLocalStorage) {
+    savedInput = savedInputFromLocalStorage;
+    render();
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem("savedInput", JSON.stringify(savedInput));
+}
+
 buttonEl.addEventListener("click", function () {
     if (inputEl.value) {
         savedInput.push({ text: inputEl.value, isChecked: false });
         inputEl.value = "";
+        saveToLocalStorage();
         render();
     }
 });
